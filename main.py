@@ -5,7 +5,6 @@ import re
 import argparse
 from openpyxl import Workbook
 import json
-import subprocess
 import requests
 from typing import Dict, List, Any
 
@@ -297,9 +296,7 @@ def main():
     args = parser.parse_args()
     
     # Set up the LLM interface
-    llm_interface = None
     converter = WordToExcelConverter(
-        llm_interface=llm_interface,
         llm_type=args.llm_type,
         model=args.model
     )
@@ -307,6 +304,7 @@ def main():
     # Convert Word document to Excel
     excel_path = converter.convert_to_excel(args.word_path, args.excel_path)
     print(f"Conversion complete. Saved as: {excel_path}")
+    return excel_path
 
 if __name__ == "__main__":
     main()

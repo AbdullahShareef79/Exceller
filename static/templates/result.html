@@ -3,12 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Processed Result</title>
+    <title>Processing Result</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1, h2 {
+            color: #2c3e50;
+        }
+        .result-container {
+            margin: 30px 0;
+            padding: 20px;
+            border-radius: 5px;
+            background-color: #f7f9fc;
+        }
+        .download-button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin: 20px 0;
+        }
+        .download-button:hover {
+            background-color: #219653;
+        }
+        .back-button {
+            background-color: #7f8c8d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .back-button:hover {
+            background-color: #636e72;
+        }
+        pre {
+            background-color: #edf2f7;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+    </style>
 </head>
 <body>
-    <h1>Processing Result</h1>
-    <pre>{{ output }}</pre> <!-- This will display the output from main.py -->
-    <br>
-    <a href="{{ url_for('index') }}">Upload Another File</a>
+    <h1>Processing Complete</h1>
+    
+    <div class="result-container">
+        <h2>Result Summary</h2>
+        <pre>{{ output }}</pre>
+        
+        {% if excel_path %}
+        <h2>Download Excel File</h2>
+        <a href="{{ url_for('download_file', filename=excel_path) }}" class="download-button">Download Excel File</a>
+        {% endif %}
+    </div>
+    
+    <a href="{{ url_for('index') }}" class="back-button">Process Another Document</a>
 </body>
 </html>
