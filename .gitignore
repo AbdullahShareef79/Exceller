@@ -1,0 +1,44 @@
+# Python Bytecode Files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual Environment (if you're using one)
+venv/
+.venv/
+env/
+.env/
+
+# IDE and Editor Configurations
+.idea/
+.vscode/
+.sublime-workspace
+.sublime-project
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# MacOS System Files
+.DS_Store
+
+# Windows System Files
+Thumbs.db
+ehthumbs.db
+
+# Log files
+*.log
+
+# .env files for sensitive configurations (if any)
+.env
+
+# Python distributions
+dist/
+build/
+*.egg-info/
+
+# Temporary files
+*.bak
+*.swp
+
+
+uploads/
