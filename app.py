@@ -9,7 +9,7 @@ import logging
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(levelname)s - %(message)s')
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='static/templates')
 
 # Set up the folders
 UPLOAD_FOLDER = os.path.abspath('uploads')
