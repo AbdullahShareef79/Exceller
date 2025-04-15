@@ -1,8 +1,6 @@
 import os
-import shlex
-from flask import Flask, render_template, request, redirect, url_for, send_file
 import subprocess
-from pathlib import Path
+from flask import Flask, render_template, request, redirect, url_for, send_file
 import logging
 
 # Configure logging
@@ -46,7 +44,6 @@ def process_document(file_path):
     logging.info(f"Running command: {' '.join(command)}")
     
     # Run the command and capture the output
-    # Setting shell=False to avoid shell path parsing issues
     result = subprocess.run(command, shell=False, capture_output=True, text=True)
     
     if result.returncode != 0:
@@ -98,6 +95,26 @@ def upload_file():
 def download_file(filename):
     return send_file(os.path.join(app.config['OUTPUT_FOLDER'], filename),
                      as_attachment=True)
+
+def main():
+    import argparse
+    from main import WordToExcelConverter  # Assuming this exists in your project
+
+    parser = argparse.ArgumentParser(description="Convert Word to Excel with structured data.")
+    parser.add_argument("word_path", type=str, help="Path to the Word document to convert")
+    parser.add_argument("--excel_path", type=str, help="Path to save the converted Excel file", default=None)
+    parser.add_argument("--llm_type", type=str, choices=["ollama", "lmstudio", "textgen"], default="ollama", help="LLM interface to use")
+    parser.add_argument("--model", type=str, default="llama3", help="Model name to use with Ollama interface")
+    
+    args = parser.parse_args()
+    
+    # Initialize the WordToExcelConverter with specified LLM interface
+    converter = WordToExcelConverter(llm_type=args.llm_type, model=args.model)
+    
+    # Convert the Word document to Excel
+    excel_file = converter.convert_to_excel(args.word_path, excel_path=args.excel_path)
+    
+    print(f"Conversion complete. Excel file saved to: {excel_file}")
 
 if __name__ == "__main__":
     app.run(debug=True)

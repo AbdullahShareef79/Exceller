@@ -289,18 +289,22 @@ def main():
     parser = argparse.ArgumentParser(description="Convert Word to Excel with structured data.")
     parser.add_argument("word_path", type=str, help="Path to the Word document to convert")
     parser.add_argument("--excel_path", type=str, help="Optional path to save the Excel file")
-    parser.add_argument("--llm_type", type=str, choices=["ollama", "lmstudio", "textgen"], default="ollama", help="Type of LLM to use (default: ollama)")
-    parser.add_argument("--model", type=str, default="llama3", help="Model name for Ollama (default: llama3)")
-
+    parser.add_argument("--llm_type", type=str, default="ollama", choices=["ollama", "lmstudio", "textgen"],
+                        help="Specify the type of LLM to use")
+    parser.add_argument("--model", type=str, default="llama3", help="Model to use with Ollama")
+    
     args = parser.parse_args()
-
-    # Initialize the WordToExcelConverter with the specified LLM
-    converter = WordToExcelConverter(llm_type=args.llm_type, model=args.model)
-
+    
+    # Set up the LLM interface
+    converter = WordToExcelConverter(
+        llm_type=args.llm_type,
+        model=args.model
+    )
+    
     # Convert Word document to Excel
     excel_path = converter.convert_to_excel(args.word_path, args.excel_path)
-
-    print(f"Conversion complete. The Excel file has been saved at: {excel_path}")
+    print(f"Conversion complete. Saved as: {excel_path}")
+    return excel_path
 
 if __name__ == "__main__":
     main()
