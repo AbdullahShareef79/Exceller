@@ -17,6 +17,7 @@ class DocumentResponse(DocumentBase):
     output_filename: Optional[str] = None
     status: ProcessingStatus
     error_message: Optional[str] = None
+    user_id: int
     created_at: datetime
     updated_at: datetime
 

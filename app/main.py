@@ -3,9 +3,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 import sentry_sdk
-from prometheus_flask_exporter.middleware import PrometheusMiddleware
+from prometheus_fastapi_instrumentator import Instrumentator
 from app.core.config import settings
-from app.api.v1.endpoints import documents
+from app.api.v1.endpoints import documents, auth
 from app.core.database import init_db
 
 # Initialize Sentry for error tracking
@@ -31,13 +31,19 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Add Prometheus middleware for metrics
-app.add_middleware(PrometheusMiddleware)
+# Initialize Prometheus metrics
+Instrumentator().instrument(app).expose(app)
 
 # Mount static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Include routers
+app.include_router(
+    auth.router,
+    prefix=f"{settings.API_V1_STR}/auth",
+    tags=["auth"]
+)
+
 app.include_router(
     documents.router,
     prefix=f"{settings.API_V1_STR}/documents",

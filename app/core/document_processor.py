@@ -248,59 +248,42 @@ class WordToExcelConverter:
                 
             except (json.JSONDecodeError, AttributeError):
                 # If parsing fails, continue with current analysis
-                pass
+                continue
                 
         return analysis
 
     def convert_to_excel(self, word_path: str, excel_path: str = None) -> str:
-        """Convert Word document to Excel workbook"""
+        """Convert Word document to Excel with structured data"""
         if not excel_path:
-            # Create output path based on input filename
             excel_path = os.path.splitext(word_path)[0] + '.xlsx'
             
         # Extract text from Word document
         text = self.extract_text_from_docx(word_path)
         
-        # Analyze content to determine structure
+        # Analyze document structure
         analysis = self.chunked_analysis(text)
         
-        print(f"Analysis complete. Found {len(analysis['tables'])} potential tables.")
-        
         # Create Excel workbook
-        workbook = Workbook()
-        # Remove default sheet
-        default_sheet = workbook.active
-        workbook.remove(default_sheet)
+        wb = Workbook()
+        wb.remove(wb.active)  # Remove default sheet
         
-        # For each table found by the model, create a sheet and add data
+        # Process each table structure
         for table_spec in analysis['tables']:
-            sheet = workbook.create_sheet(title=table_spec['name'][:31])  # Excel sheet name limit 31 chars
-            sheet.append(table_spec['columns'])  # Add column headers
+            # Extract data according to table specification
+            data = self.extract_structured_data(text, table_spec)
             
-            # Extract data for this table
-            for row_data in self.extract_structured_data(text, table_spec):
-                sheet.append([row_data.get(col, "") for col in table_spec['columns']])
-        
-        # Save the workbook
-        workbook.save(excel_path)
-        return excel_path
-
-def main():
-    parser = argparse.ArgumentParser(description="Convert Word to Excel with structured data.")
-    parser.add_argument("word_path", type=str, help="Path to the Word document to convert")
-    parser.add_argument("--excel_path", type=str, help="Optional path to save the Excel file")
-    parser.add_argument("--llm_type", type=str, choices=["ollama", "lmstudio", "textgen"], default="ollama", help="Type of LLM to use (default: ollama)")
-    parser.add_argument("--model", type=str, default="llama3", help="Model name for Ollama (default: llama3)")
-
-    args = parser.parse_args()
-
-    # Initialize the WordToExcelConverter with the specified LLM
-    converter = WordToExcelConverter(llm_type=args.llm_type, model=args.model)
-
-    # Convert Word document to Excel
-    excel_path = converter.convert_to_excel(args.word_path, args.excel_path)
-
-    print(f"Conversion complete. The Excel file has been saved at: {excel_path}")
-
-if __name__ == "__main__":
-    main()
+            # Create worksheet
+            ws = wb.create_sheet(title=table_spec['name'][:31])  # Excel limits sheet names to 31 chars
+            
+            # Write headers
+            for col, header in enumerate(table_spec['columns'], start=1):
+                ws.cell(row=1, column=col, value=header)
+                
+            # Write data
+            for row, record in enumerate(data, start=2):
+                for col, header in enumerate(table_spec['columns'], start=1):
+                    ws.cell(row=row, column=col, value=record.get(header, ''))
+                    
+        # Save workbook
+        wb.save(excel_path)
+        return excel_path 

@@ -1,7 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, Session
 from .config import settings
-from app.models.base import Base
+from app.models import Base  # This will import all models
+import app.models  # This ensures all models are loaded
 
 engine = create_engine(
     settings.SQLALCHEMY_DATABASE_URI,

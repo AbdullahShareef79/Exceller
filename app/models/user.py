@@ -1,6 +1,9 @@
 from sqlalchemy import Column, String, Boolean
-from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy.orm import relationship
+from passlib.context import CryptContext
 from .base import BaseModel
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 class User(BaseModel):
     __tablename__ = "users"
@@ -10,12 +13,16 @@ class User(BaseModel):
     hashed_password = Column(String, nullable=False)
     is_active = Column(Boolean, default=True)
     is_superuser = Column(Boolean, default=False)
+    full_name = Column(String)
+    
+    # Relationships
+    documents = relationship("Document", back_populates="user")
 
     def set_password(self, password: str):
-        self.hashed_password = generate_password_hash(password)
+        self.hashed_password = pwd_context.hash(password)
 
-    def check_password(self, password: str) -> bool:
-        return check_password_hash(self.hashed_password, password)
+    def verify_password(self, password: str) -> bool:
+        return pwd_context.verify(password, self.hashed_password)
 
     def __repr__(self):
-        return f"<User {self.username}>" 
+        return f"<User {self.email}>" 

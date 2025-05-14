@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exceller - Document Processing</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="min-h-screen">
+        <nav class="bg-white shadow-lg">
+            <div class="max-w-7xl mx-auto px-4">
+                <div class="flex justify-between h-16">
+                    <div class="flex">
+                        <div class="flex-shrink-0 flex items-center">
+                            <h1 class="text-xl font-bold text-gray-800">Exceller</h1>
+                        </div>
+                    </div>
+                    <div class="flex items-center" id="authButtons">
+                        <button onclick="showLoginForm()" class="ml-4 px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900">Login</button>
+                        <button onclick="showRegisterForm()" class="ml-4 px-4 py-2 text-sm font-medium bg-indigo-600 text-white rounded-md hover:bg-indigo-700">Register</button>
+                    </div>
+                    <div class="flex items-center hidden" id="userInfo">
+                        <span id="userEmail" class="text-gray-700"></span>
+                        <button onclick="logout()" class="ml-4 px-4 py-2 text-sm font-medium text-red-600 hover:text-red-700">Logout</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+            <!-- Auth Forms -->
+            <div id="loginForm" class="hidden">
+                <div class="bg-white shadow rounded-lg p-6 mb-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Login</h2>
+                    <form onsubmit="login(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" name="password" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <button type="submit"
+                                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Login
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div id="registerForm" class="hidden">
+                <div class="bg-white shadow rounded-lg p-6 mb-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Register</h2>
+                    <form onsubmit="register(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Username</label>
+                            <input type="text" name="username" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Full Name</label>
+                            <input type="text" name="fullName"
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Password</label>
+                            <input type="password" name="password" required
+                                   class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                        </div>
+                        <button type="submit"
+                                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Register
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Upload Form -->
+            <div id="uploadSection" class="hidden">
+                <div class="bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Upload Document</h2>
+                    <form id="uploadForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">
+                                Select Word Document
+                            </label>
+                            <input type="file" 
+                                   accept=".docx"
+                                   class="mt-1 block w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                   required>
+                        </div>
+                        <button type="submit"
+                                class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Upload and Process
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Documents List -->
+                <div class="mt-6 bg-white shadow rounded-lg p-6">
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Your Documents</h2>
+                    <div id="documentsList" class="divide-y divide-gray-200">
+                        <!-- Documents will be listed here -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // State management
+        let accessToken = localStorage.getItem('accessToken');
+        let userEmail = localStorage.getItem('userEmail');
+
+        // Check authentication status on load
+        window.addEventListener('load', () => {
+            if (accessToken) {
+                showAuthenticatedUI();
+                loadDocuments();
+            }
+        });
+
+        // UI Functions
+        function showLoginForm() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('uploadSection').classList.add('hidden');
+        }
+
+        function showRegisterForm() {
+            document.getElementById('registerForm').classList.remove('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('uploadSection').classList.add('hidden');
+        }
+
+        function showAuthenticatedUI() {
+            document.getElementById('authButtons').classList.add('hidden');
+            document.getElementById('userInfo').classList.remove('hidden');
+            document.getElementById('userEmail').textContent = userEmail;
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('uploadSection').classList.remove('hidden');
+        }
+
+        function showUnauthenticatedUI() {
+            document.getElementById('authButtons').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+            document.getElementById('uploadSection').classList.add('hidden');
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.add('hidden');
+        }
+
+        // Auth Functions
+        async function login(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            try {
+                const response = await fetch('/api/v1/auth/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        'username': formData.get('email'),
+                        'password': formData.get('password'),
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    accessToken = data.access_token;
+                    userEmail = formData.get('email');
+                    localStorage.setItem('accessToken', accessToken);
+                    localStorage.setItem('userEmail', userEmail);
+                    showAuthenticatedUI();
+                    loadDocuments();
+                } else {
+                    alert('Login failed: ' + data.detail);
+                }
+            } catch (error) {
+                alert('Error during login: ' + error.message);
+            }
+        }
+
+        async function register(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            
+            try {
+                const response = await fetch('/api/v1/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: formData.get('email'),
+                        username: formData.get('username'),
+                        full_name: formData.get('fullName'),
+                        password: formData.get('password'),
+                    }),
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    alert('Registration successful! Please login.');
+                    showLoginForm();
+                } else {
+                    alert('Registration failed: ' + data.detail);
+                }
+            } catch (error) {
+                alert('Error during registration: ' + error.message);
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('userEmail');
+            accessToken = null;
+            userEmail = null;
+            showUnauthenticatedUI();
+        }
+
+        // Document Functions
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const fileInput = e.target.querySelector('input[type="file"]');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                alert('Please select a file');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            try {
+                const response = await fetch('/api/v1/documents/upload', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`
+                    },
+                    body: formData
+                });
+
+                let result;
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) {
+                    result = await response.json();
+                } else {
+                    result = { detail: await response.text() };
+                }
+                
+                if (response.ok) {
+                    alert('Document uploaded successfully!');
+                    loadDocuments();
+                    fileInput.value = '';
+                } else {
+                    alert('Error: ' + (result.detail || 'Unknown error occurred'));
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('Error uploading document. Please try again.');
+            }
+        });
+
+        async function loadDocuments() {
+            try {
+                const response = await fetch('/api/v1/documents/', {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                    },
+                });
+
+                const documents = await response.json();
+                
+                const documentsList = document.getElementById('documentsList');
+                documentsList.innerHTML = documents.map(doc => `
+                    <div class="py-4">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-lg font-medium">${doc.original_filename}</h3>
+                                <p class="text-sm text-gray-500">Status: ${doc.status}</p>
+                            </div>
+                            ${doc.status === 'completed' 
+                                ? `<a href="/api/v1/documents/${doc.id}/download" 
+                                     class="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700">
+                                     Download Excel
+                                   </a>`
+                                : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                console.error('Error loading documents:', error);
+            }
+        }
+    </script>
+</body>
+</html> 
