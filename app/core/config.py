@@ -26,14 +26,22 @@ class Settings(BaseSettings):
     MAX_CONTENT_LENGTH: int = 16 * 1024 * 1024  # 16MB max file size
     ALLOWED_EXTENSIONS: set = {"docx"}
     
-    # Redis and Celery
-    REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    CELERY_BROKER_URL: str = REDIS_URL
-    CELERY_RESULT_BACKEND: str = REDIS_URL
+    # Message Queue Configuration
+    RABBITMQ_HOST: str = os.getenv("RABBITMQ_HOST", "localhost")
+    RABBITMQ_PORT: int = int(os.getenv("RABBITMQ_PORT", "5672"))
+    RABBITMQ_USER: str = os.getenv("RABBITMQ_USER", "guest")
+    RABBITMQ_PASS: str = os.getenv("RABBITMQ_PASS", "guest")
+    RABBITMQ_VHOST: str = os.getenv("RABBITMQ_VHOST", "/")
     
-    # Rate Limiting
-    RATELIMIT_STORAGE_URL: str = REDIS_URL
-    RATELIMIT_DEFAULT: str = "200 per day, 50 per hour"
+    # Celery Configuration
+    CELERY_BROKER_URL: str = os.getenv(
+        "CELERY_BROKER_URL",
+        f"amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/{RABBITMQ_VHOST}"
+    )
+    CELERY_RESULT_BACKEND: str = os.getenv(
+        "CELERY_RESULT_BACKEND",
+        f"rpc://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_HOST}:{RABBITMQ_PORT}/{RABBITMQ_VHOST}"
+    )
     
     # Monitoring
     SENTRY_DSN: Optional[str] = os.getenv("SENTRY_DSN")

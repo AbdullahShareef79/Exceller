@@ -12,7 +12,7 @@
   - Background task processing with Celery
   - Real-time status updates
 - 🔄 **Asynchronous Processing**
-  - Redis-backed task queue
+  - RabbitMQ-backed task queue
   - Scalable worker architecture
 - 📈 **Monitoring**
   - Prometheus metrics integration
@@ -29,7 +29,7 @@
   - FastAPI (Modern, fast web framework)
   - SQLAlchemy (ORM)
   - Celery (Task Queue)
-  - Redis (Message Broker)
+  - RabbitMQ (Message Broker)
   - Pydantic (Data Validation)
 
 - **Frontend**
@@ -57,26 +57,33 @@
    pip install -r requirements.txt
    ```
 
-3. **Install Redis:**
-   - Windows: Download from [Redis for Windows](https://github.com/microsoftarchive/redis/releases)
-   - Linux: `sudo apt-get install redis-server`
-   - macOS: `brew install redis`
+3. **Install RabbitMQ:**
+   - Windows: Download and install from [RabbitMQ official website](https://www.rabbitmq.com/download.html)
+   - Linux: `sudo apt-get install rabbitmq-server`
+   - macOS: `brew install rabbitmq`
 
 4. **Environment Setup:**
    Create a `.env` file in the project root:
    ```env
    SECRET_KEY=your-secret-key-here
    DATABASE_URL=sqlite:///./app.db
-   REDIS_URL=redis://localhost:6379/0
+   RABBITMQ_HOST=localhost
+   RABBITMQ_PORT=5672
+   RABBITMQ_USER=guest
+   RABBITMQ_PASS=guest
+   RABBITMQ_VHOST=/
    SENTRY_DSN=your-sentry-dsn  # Optional
    ```
 
 ## 🚀 Running the Application
 
-1. **Start Redis:**
+1. **Start RabbitMQ:**
    ```bash
-   # Redis should be running as a service
-   redis-cli ping  # Should return PONG
+   # RabbitMQ should be running as a service
+   # To check status on Windows:
+   rabbitmqctl status
+   # On Linux/macOS:
+   sudo systemctl status rabbitmq-server
    ```
 
 2. **Start Celery Worker:**
